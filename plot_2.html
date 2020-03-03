@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+
+
+<html>
+<head>	
+	<meta content="text/html; charset=UTF-8; X-Content-Type-Options=nosniff" http-equiv="Content-Type" />
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+
+</head>
+
+<body>
+    <h1>Graph Plot</h1>
+
+	<select id="mySelect" onchange="myFunction()">
+		<option value="Square">Square Graph</option>
+		<option value="Cube">Cube Graph</option>
+    </select>
+	
+	<p id="myP1" style="text-align:center;">Square Graph.</p>
+    <p id="myP2" style="text-align:center;">Cube Graph.</p>
+    
+    <div id="maincontent" style="overflow:hidden;width:960; margin:0 auto;background:#fff;">
+        <div id="tester" style="width:650px;height:450px;margin-left:auto;margin-right:auto;"></div>
+        <div id="tester_1" style="width:650px;height:450px;float:right;"></div>
+    </div>
+
+    <script>
+        var spData = [];
+        var data = [];
+        var arr = [];
+        var jsonData = [];
+        var data1 = [];
+        var arr1 = [];
+
+        function myFunction(){
+            var x = document.getElementById("mySelect").value;
+            if (x =="Square"){
+                squarePlot();
+            }
+            else{
+                cubePlot();
+            }
+        }
+
+		
+        function doData(json){
+            spData = json.feed.entry;
+            jsonData.push(json.feed.entry);
+			console.log(jsonData);
+			console.log(spData);
+            
+            data = spData;
+			
+			console.log(data.length);
+        
+            for(var r=0; r<data.length; r++) {
+            cell = data[r]["gs$cell"];
+            val = cell["$t"];
+            arr[r] = val; 
+            }
+
+            squarePlot(); // SquarePlot function call
+
+            data1 = jsonData[0];
+            
+            for(var r=0; r<jsonData[0].length; r++) {
+                var cell1 = jsonData[0][r]["gs$cell"];
+                var val1 = cell1["$t"];
+                arr1[r] = val1; 
+            }
+        }
+        
+
+        function squarePlot(){
+            document.getElementById("myP2").style.display = "none";
+            document.getElementById("myP1").style.display = "block";
+            
+            TESTER = document.getElementById('tester');
+            Plotly.newPlot( 'tester', [{
+            x: [arr[0], arr[3], arr[6], arr[9], arr[12]],
+            y: [arr[1], arr[4], arr[7], arr[10], arr[13]] }], {
+            margin: { t: 0 } } );	
+        }
+        
+
+        function cubePlot(){
+            document.getElementById("myP1").style.display = "none";
+            document.getElementById("myP2").style.display = "block";
+            
+            TESTER1 = document.getElementById('tester');
+            Plotly.newPlot( 'tester', [{
+            x: [arr1[0], arr1[3], arr1[6], arr1[9], arr1[12]],
+            y: [arr1[2], arr1[5], arr1[8], arr1[11], arr1[14]] }], {
+            margin: { t: 0 } } );
+        }
+
+	</script>
+	<script src="https://spreadsheets.google.com/feeds/cells/1g0q_M5pQ74fXEttlB9nXOtCZA-qX_mZLZaOqqq-QauM/1/public/values?alt=json-in-script&callback=doData"></script>
+</body>
+
+</html>
